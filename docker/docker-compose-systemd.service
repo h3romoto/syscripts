@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# create a systemd service that autostarts and manges docker-compose services
+# created by Tanaka Khondowe
+
+# service name is the name of current directory
+SERVICE=$( pwd | awk -F "/" '{print $NF}')
+
+echo "Creating systemd service /etc/systemd/system/${SERVICE}.service"
+
+# create systemd service file
+
+sudo cat > /etc/systemd/system/$SERVICE.service <<EOF
+[Unit]
+Description=$SERVICE
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+User=root
+Group=docker
+WorkingDirectory=$(pwd)
+# shutdown containers (if running) when unit is started
+ExecStartPre=$(which docker-compose) -f docker-compose.yml down
+# start containers when unit is started
+ExecStart=$(which docker-compose) -f docker-compose.yml up
+# stop containers when unit is stopped
+ExecStop=$(which docker-compose) -f docker-compose.yml down
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+echo "Enabling and starting $SERVICE"
+# Autostart systemd service
+sudo systemctl enable $SERVICE.service
+# Start systemd service now
+sudo systemctl start $SERVICE.service
+
+
