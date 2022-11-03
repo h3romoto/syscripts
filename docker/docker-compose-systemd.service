@@ -21,8 +21,6 @@ Restart=always
 User=root
 Group=docker
 WorkingDirectory=$(pwd)
-# shutdown containers (if running) when unit is started
-ExecStartPre=$(which docker-compose) -f docker-compose.yml down
 # start containers when unit is started
 ExecStart=$(which docker-compose) -f docker-compose.yml up
 # stop containers when unit is stopped
