@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# create a systemd service that autostarts and manges docker-compose services
+# create a systemd service that autostarts and manages docker-compose services
 # created by Tanaka Khondowe
 
 # service name is the name of current directory
